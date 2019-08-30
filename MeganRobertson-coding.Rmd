@@ -1,0 +1,142 @@
+---
+title: "Megan Robertson Coding Exercise"
+output:
+  html_document:
+    df_print: paged
+---
+
+#First, let's load our data package: "dslabs". Use the function library.
+
+```{r}
+library(dslabs)
+```
+
+#Next, we'll examine what the gapminder dataset is about, using the help() function.
+
+```{r}
+help("gapminder")
+```
+
+#According the Help window, Gapminder is a dataset with health and income outcomes for 184 countries from 1960 to 2016. 
+
+#Next, let's look at the data itself. Using Str and Summary functions will provide a general overview.
+
+```{r}
+str(gapminder)
+summary(gapminder)
+class(gapminder)
+```
+
+#You can see from the output below that the structure of Gapminder has 9 different variables ranging from country, year, life expectancy, etc, with a total of 10,545 observations. The summary function shows briefly the min, max, median, mean, etc for the first 6 countries. Finally, Gapminder is a data frame.
+
+#Now let's only look at data from Africa. To do this, because gapminder is a dataframe, we can conditionally index the row "contient" to only have "Africa". Once again, let's look at str and summary of this new dataset.
+
+```{r}
+africandata <- gapminder[gapminder$continent == "Africa", ]
+str(africandata)
+summary(africandata)
+```
+
+#2907 observations are associated with Africa. To check our work, looking back at the above Gapminder dataframe, observations 2 and 3 are indeed African countries. 
+
+#Let's look at different health outcomes in these countries. First we will create new variables from africandata with infant mortality and life expectancy using indexing again. We select only the relevant rows from africandata to put into a object. Finally we create a new data frame called "africaninfantlife" with the two new variables.
+
+```{r}
+infantmort <- africandata$infant_mortality
+lifeexp <- africandata$life_expectancy
+africaninfantlife <- data.frame("infant mortality" = infantmort, "life expectancy" = lifeexp)
+str(africaninfantlife)
+summary(africaninfantlife)
+```
+
+#A data frame has been created with 2907 observations with the 2 variables of infant mortality and life expectancy.
+
+#Now the same thing for population and life expectancy.
+
+```{r}
+pop <- africandata$population
+lifeexp <- africandata$life_expectancy
+africanpoplife <- data.frame("population" = pop, "life expectancy" = lifeexp)
+str(africanpoplife)
+summary(africanpoplife)
+```
+
+#Again another data frame has been created with 2907 observations and the 2 variables of population and life expectany.
+
+#Let's plot! We'll use the basic plot function (use xlab/ylab to label our x/y axis, main to title our plot, and change the output to points using type) to look at infant mortality vs life expectancy.
+
+```{r}
+plot(africaninfantlife, xlab = "Infant Mortality", ylab = "Life Expectancy", main = "Health Associations in Africa", type = "p")
+```
+
+#From this plot, you can see a negative correlation between infant mortality and life expectancy.
+
+#Let's look at population vs life expectancy. To improve the readability, the x-axis is converted to a log 10 scale to improve readability.
+
+```{r}
+plot(log10(pop), lifeexp, xlab = "Population (log10)", ylab = "Life Expectancy", main = "Health Associations in Africa", type = "p")
+```
+
+#There is a positive correlation between population size and life expectancy, which can be expected. 
+#In both plots there are data "streaks", which correspond to a country's progression through the years observed. 
+
+#Instead of all the years, we will look at the year with the most data. First we need to find what years have missing data for infant mortality. To do this, let's use is.na and which observations are missing in infant mortality.
+
+```{r}
+missing <- which(is.na(infantmort))
+print(missing)
+```
+
+#There are 226 observations with missing data in infant mortality for our African dataset. Let's convert these to year data to see what years are missing.
+
+```{r}
+yeardata <- gapminder$year[missing]
+print(yeardata)
+```
+
+#These 226 observations are now matched with the years. 
+
+#We will look at year 2000 data. Let's create another datas frame with just year 2000 data selected from our africandata.
+
+```{r}
+yeary2k <- africandata[africandata$year == 2000, ]
+str(yeary2k)
+summary(yeary2k)
+```
+
+#Ok we have 51 observations with 9 variables!
+
+#Let's plot! We don't need to do intermediate variables, we can just select what variables we want out of our new year2k data frame. Again, let's label the axes and title  
+
+```{r}
+plot(yeary2k$infant_mortality, yeary2k$life_expectancy, xlab = "Infant Mortality", ylab = "Life Expectancy", main = "Year 2000 Health Outcomes in Africa", type = "p")
+```
+
+
+#There is still a negative correlation between infant mortality and life expectancy. 
+
+#Let's look at population and life expectancy. Again, population is converted into log10.
+
+```{r}
+plot(log10(yeary2k$population), yeary2k$life_expectancy, xlab = "Population(log 10)", ylab = "Life Expectancy", main = "Year 2000 Health Outcomes in Africa", type = "p")
+```
+
+#It appears there is no correlation between population and life expectancy. Let's run some statistics! We will use the lm function which is used to fit linear models. Infant mortality and population are the predictors and life expectancy is the outcome.
+
+```{r}
+fit1 <- lm(yeary2k$life_expectancy ~ yeary2k$infant_mortality)
+fit2 <- lm(yeary2k$life_expectancy ~ yeary2k$population)
+```
+
+#Let's run a summary on these linear models.
+
+```{r}
+summary(fit1)
+summary(fit2)
+```
+
+#The p-value of Fit1 is 2.826e-08. This means that the correlation between higher infant mortality seems to be associated with lower life expectancy, which makes sense as shown on the plot.
+
+#The p-value of Fit2 is 0.6159. There is in line with the graph as there seems to be no correlation between population size and life expectancy.
+
+#However, we are just looking at one year so population size changes are lost in this dataset, compared to the previous data of all years. 
