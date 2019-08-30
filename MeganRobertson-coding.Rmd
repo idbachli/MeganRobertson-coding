@@ -1,6 +1,7 @@
 ---
 title: "Megan Robertson Coding Exercise"
 output:
+  word_document: default
   html_document:
     df_print: paged
 ---
