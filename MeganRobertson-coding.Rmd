@@ -13,7 +13,7 @@ output:
 library(tidyverse)
 library(skimr)
 ```
-glim
+
 
 ```{r}
 #Ian Bachli Tidyverse Exercise
