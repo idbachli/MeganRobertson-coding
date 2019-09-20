@@ -13,13 +13,13 @@ output:
 library(tidyverse)
 library(skimr)
 ```
-
+glim
 
 ```{r}
 #Ian Bachli Tidyverse Exercise
 #The glimpse function from dplyr helps us to look at the gapminder data.
 
-
+glimpse(gapminder)
 
 #Glimpse shows 10,545 observations and 9 variables. The variables are listed in rows containing the variable name and class, as well as a few early observations from the set. Glimpse and the str function are similar.
 ```
