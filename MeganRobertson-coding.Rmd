@@ -1,10 +1,87 @@
 ---
-title: "Megan Robertson Coding Exercise"
+title: "Megan Robertson & Ian Bachli Coding Exercise"
 output:
   word_document: default
   html_document:
     df_print: paged
 ---
+
+```{r}
+#Ian Bachli Tidyverse Exercise
+#Loading these two packages makes coding easier and can save you time in the long run. 
+
+library(tidyverse)
+library(skimr)
+```
+
+
+```{r}
+#Ian Bachli Tidyverse Exercise
+#The glimpse function from dplyr helps us to look at the gapminder data.
+
+
+
+#Glimpse shows 10,545 observations and 9 variables. The variables are listed in rows containing the variable name and class, as well as a few early observations from the set. Glimpse and the str function are similar.
+```
+
+
+```{r}
+#Ian Bachli Tidyverse Exercise
+#The Skim function from Skimr allows us to examine a summary of the data focusing on the variables. 
+
+skim(gapminder)
+
+#Skim generates a summary of the data from gapminder, highlighting the variables in the set. Skim shows each variable and provides a short summary that is relevant to the data class. Skim also provides the total obsevations and missing values for each variable in the data set. 
+```
+
+
+```{r}
+#Ian Bachli Tidyverse Exercise
+#Extract only the African countries from the gapminder data set. 
+
+africancountries <- filter(gapminder, continent == "Africa")
+
+#The africancountries  object is used to store data for this exercise to distinguish itself from the previous object, africadata. Both objects contain the same data with 2907 observations and 9 variables. 
+#TBy converting africancountries into a tibble, formatting the data into a clean view and prevents R from printing all of the data into the console if you view the object.
+
+africatibble <- tbl_df(africancountries)
+africatibble
+```
+
+
+```{r}
+#Ian Bachli Tidyverse Exercise
+#Using only African countries select the following variables to keep: infant_mortality, life_expectancy, population, and country. Create a new object using the previously made africatibble and use the select function to choose the variables of interest. 
+
+africa_plot_data <- select(africatibble, life_expectancy, infant_mortality, population, country)
+africa_plot_data
+
+#This results in a tibble with 2907 observations and 4 variables. You could also do this by selecting all variables that are not of interest and placing a - symbol in front of each of their names to subtract them. 
+```
+
+
+```{r}
+#Ian Bachli Tidyverse Exercise 
+#Create two plots using ggplot for life expectancy as a function of infant mortality and population. Assign different colors for each country in the data set. 
+#There are two different plotting functions within ggplot2: qplot (quick plot) and ggplot. qplot is streamlined and useful for any simple figures, while ggplot is ideal for more complex figures. qplot will be used for the first two figures and ggplot for the second. 
+#Make a plot of life expectancy vs. infant mortality.
+#Using the qplot function input the desired variables starting with x then y, color defines the data point color, data assigns the africa_plot_data object, the labs function creates professional labels for the x and y axes, and the theme function sets formatting to the figure legend. 
+
+qplot(infant_mortality, life_expectancy, color = country, data = africa_plot_data) + labs(y = "Life Expectancy", x = "Infant Mortality") + theme(legend.key.size = unit(0.2, "cm"), legend.key.width = unit(0.1, "cm"))
+
+#The scatterplot shows the same negative correlation as seen before in the coding exercise (Megan Roberston's work) with the addition of a color coded legend to illistrate different countries. 
+#The warning of the removal of 226 rows is from the NA variables as before, and is nothing to be concerned about.  
+#Make a plot of life expectancy vs. population. Set the population size to a log scale.
+
+qplot(population, life_expectancy, color = country, data = africa_plot_data) + labs(y = "Life Expectancy", x = "Population (log10)") + scale_x_log10() + theme(legend.key.size = unit(0.2, "cm"), legend.key.width = unit(0.1, "cm"))
+
+#The resulting scatter plot shows the color coded countries with the original streaks from the previous data. Adding color makes it easier to see and interpret the data.
+# We can see that as a opulation within a country increases, the life expectancy increases also. 
+# Another warning of the removal of 51 rows is consistent with the measure of NA values for population, as expected.  
+```
+
+
+
 
 #First, let's load our data package: "dslabs". Use the function library.
 
