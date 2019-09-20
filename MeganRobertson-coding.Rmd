@@ -12,6 +12,7 @@ output:
 
 library(tidyverse)
 library(skimr)
+library(dslabs)
 ```
 
 
