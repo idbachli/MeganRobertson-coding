@@ -1,26 +1,30 @@
 ---
 title: "Megan Robertson Coding Exercise"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
-#First, let's load our data package: "dslabs". Use the function library.
+First, let's load the necessary packages: "dslabs", "tidyverse", and "skimr". Use the function "library".
 
 ```{r}
 library(dslabs)
+library(tidyverse)
+library(skimr)
 ```
 
-#Next, we'll examine what the gapminder dataset is about, using the help() function.
+Next, we'll examine what the gapminder dataset is about, using the help(), glimpse() and skim() functions. 
 
 ```{r}
 help("gapminder")
+glimpse("gapminder")
+skim("gapminder")
 ```
 
-#According the Help window, Gapminder is a dataset with health and income outcomes for 184 countries from 1960 to 2016. 
+According the Help window, Gapminder is a dataset with health and income outcomes for 184 countries from 1960 to 2016. 
 
-#Next, let's look at the data itself. Using Str and Summary functions will provide a general overview.
+Next, let's look at the data itself. Using Str and Summary functions will provide a general overview.
 
 ```{r}
 str(gapminder)
@@ -28,9 +32,9 @@ summary(gapminder)
 class(gapminder)
 ```
 
-#You can see from the output below that the structure of Gapminder has 9 different variables ranging from country, year, life expectancy, etc, with a total of 10,545 observations. The summary function shows briefly the min, max, median, mean, etc for the first 6 countries. Finally, Gapminder is a data frame.
+You can see from the output below that the structure of Gapminder has 9 different variables ranging from country, year, life expectancy, etc, with a total of 10,545 observations. The summary function shows briefly the min, max, median, mean, etc for the first 6 countries. Finally, Gapminder is a data frame.
 
-#Now let's only look at data from Africa. To do this, because gapminder is a dataframe, we can conditionally index the row "contient" to only have "Africa". Once again, let's look at str and summary of this new dataset.
+Now let's only look at data from Africa. To do this, because gapminder is a dataframe, we can conditionally index the row "contient" to only have "Africa". Once again, let's look at str and summary of this new dataset.
 
 ```{r}
 africandata <- gapminder[gapminder$continent == "Africa", ]
@@ -38,9 +42,9 @@ str(africandata)
 summary(africandata)
 ```
 
-#2907 observations are associated with Africa. To check our work, looking back at the above Gapminder dataframe, observations 2 and 3 are indeed African countries. 
+2907 observations are associated with Africa. To check our work, looking back at the above Gapminder dataframe, observations 2 and 3 are indeed African countries. 
 
-#Let's look at different health outcomes in these countries. First we will create new variables from africandata with infant mortality and life expectancy using indexing again. We select only the relevant rows from africandata to put into a object. Finally we create a new data frame called "africaninfantlife" with the two new variables.
+Let's look at different health outcomes in these countries. First we will create new variables from africandata with infant mortality and life expectancy using indexing again. We select only the relevant rows from africandata to put into a object. Finally we create a new data frame called "africaninfantlife" with the two new variables.
 
 ```{r}
 infantmort <- africandata$infant_mortality
@@ -140,4 +144,41 @@ summary(fit2)
 
 #The p-value of Fit2 is 0.6159. There is in line with the graph as there seems to be no correlation between population size and life expectancy.
 
-#However, we are just looking at one year so population size changes are lost in this dataset, compared to the previous data of all years. 
+#However, we are just looking at one year so population size changes are lost in this dataset, compared to the previous data of all years.
+
+## Dplyr Package
+### Amanda Skarlupka
+The previous section was manipulated using Base R.This next section will delve into the dataset using the tidyverse packages. 
+
+First we want to extract only the African countries from the gapminder object to investigate the infant mortality, life expectancy, population, and country relationships. Then we want to visually compare infant mortality to life expectancy and then to population while differentiating between countries by color. 
+
+```{r}
+gapminder %>%
+  filter(continent == "Africa") %>%
+  select(country, infant_mortality, life_expectancy, population) %>%
+  ggplot(aes(infant_mortality, life_expectancy)) +
+    geom_line(aes(color = country)) +
+    labs(x = "Infant Mortality", y = "Life Expectancy (Years)", title = "Life expectancy drops as infant mortality increases")
+```
+
+```{r}
+gapminder %>%
+  filter(continent == "Africa") %>%
+  select(country, infant_mortality, life_expectancy, population) %>%
+  ggplot() +
+    geom_line(aes(infant_mortality, log(population), color = country)) +
+    labs(x = "Infant Mortality", y = "Log(Population, 10)", title = "Relationship between population and infant mortality")
+```
+
+Now we want create a linear model fit for the year 2000. 
+
+```{r}
+gapminder %>%
+  filter(continent == "Africa", year == "2000") %>%
+  select(country, infant_mortality, life_expectancy, population) %>%
+  ggplot(aes(x = infant_mortality, y = life_expectancy)) +
+  geom_point(aes(color = country)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Infant Mortality", y = "Life Expectancy (years)", title = "African Infant Mortality in 2000 compared to Life Expectancy")
+```
+
